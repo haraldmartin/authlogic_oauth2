@@ -98,9 +98,9 @@ If you followed these steps correctly, then you should be able to register and l
 
 == Accessing API endpoints
 
-You can easily access any API endpoints that are exposed to an OAuth2 user by utilizing the oauth2 gem's "get" method on current_user#oauth2_access_token. For instance, you can access information about the currently logged in user's Facebook profile by doing the following:
+You can easily access any API endpoints that are exposed to an OAuth2 user by utilizing the oauth2 gem's "get" method on current_user#oauth2_client. For instance, you can access information about the currently logged in user's Facebook profile by doing the following:
 
-  current_user.oauth2_access_token.get('/me')
+  current_user.oauth2_client.get('/me')
   
 This will return a JSON string representing the user's profile information.
 
@@ -115,7 +115,7 @@ You can pre-populate user information by adding the following to your User model
 
     def populate_oauth2_user
       unless oauth2_token.blank?
-        json = oauth2_access_token.get('/me')
+        json = oauth2_client.get('/me')
       
         if json
           user_data = JSON.parse(json)

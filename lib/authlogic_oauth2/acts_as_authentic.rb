@@ -67,7 +67,7 @@ module AuthlogicOauth2
         write_attribute(oauth2_token_field, value.blank? ? nil : value)
       end
       
-      def oauth2_access_token
+      def oauth2_client
         access_token
       end
 
