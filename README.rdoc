@@ -1,3 +1,5 @@
+= Authlogic OAuth2
+
 == Install and use
 
 === 1. Install the authlogic and oauth2 gems
@@ -91,3 +93,36 @@ In file app/views/users/new.html.erb:
 === 8. There is no step 8
 
 If you followed these steps correctly, then you should be able to register and login using OAuth2.
+
+== Accessing API endpoints
+
+=== You can easily access any API endpoints that are exposed to an OAuth2 user by utilizing the oauth2 gem's "get" method on current_user#oauth2_access_token. For instance, you can access information about the currently logged in user's Facebook profile by doing the following:
+
+  current_user.oauth2_access_token.get('/me')
+  
+This will return a JSON string representing the user's profile information.
+
+You can pre-populate user information by adding the following to your User model:
+
+class User < ActiveRecord::Base
+  ...
+  
+  before_filter :populate_oauth2_user
+  
+private
+
+  def populate_oauth2_user
+    unless oauth2_token.blank?
+      json = oauth2_access_token.get('/me')
+      
+      if json
+        user_data = JSON.parse(json)
+        
+        self.name = user_data['name']
+        self.facebook_uid = user_data['id']
+      end
+    end
+  end
+end
+
+You can get more information about the Facebook Graph API on the following website: http://developers.facebook.com/docs/api
