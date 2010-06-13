@@ -104,25 +104,25 @@ This will return a JSON string representing the user's profile information.
 
 You can pre-populate user information by adding the following to your User model:
 
-class User < ActiveRecord::Base
-  ...
+  class User < ActiveRecord::Base
+    ...
   
-  before_filter :populate_oauth2_user
+    before_filter :populate_oauth2_user
   
-private
+  private
 
-  def populate_oauth2_user
-    unless oauth2_token.blank?
-      json = oauth2_access_token.get('/me')
+    def populate_oauth2_user
+      unless oauth2_token.blank?
+        json = oauth2_access_token.get('/me')
       
-      if json
-        user_data = JSON.parse(json)
+        if json
+          user_data = JSON.parse(json)
         
-        self.name = user_data['name']
-        self.facebook_uid = user_data['id']
+          self.name = user_data['name']
+          self.facebook_uid = user_data['id']
+        end
       end
     end
   end
-end
 
 You can get more information about the Facebook Graph API on the following website: http://developers.facebook.com/docs/api
