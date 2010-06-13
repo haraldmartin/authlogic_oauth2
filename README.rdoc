@@ -104,25 +104,19 @@ You can easily access any API endpoints that are exposed to an OAuth2 user by ut
   
 This will return a JSON string representing the user's profile information.
 
-You can pre-populate user information by adding the following to your User model:
+You can pre-populate user information by using the after_oauth2_authentication hook in your user model:
 
+  require 'json'
+  
   class User < ActiveRecord::Base
     ...
   
-    before_create :populate_oauth2_user
-  
-  private
+    def after_oauth2_authentication
+      json = oauth2_client.get('/me')
 
-    def populate_oauth2_user
-      unless oauth2_token.blank?
-        json = oauth2_client.get('/me')
-      
-        if json
-          user_data = JSON.parse(json)
-        
-          self.name = user_data['name']
-          self.facebook_uid = user_data['id']
-        end
+      if user_data = JSON.parse(json)
+        self.name = user_data['name']
+        self.facebook_uid = user_data['id']
       end
     end
   end

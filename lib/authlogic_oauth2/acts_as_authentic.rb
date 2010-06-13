@@ -87,6 +87,7 @@ module AuthlogicOauth2
         # Restore any attributes which were saved before redirecting to the oauth2 server
         self.attributes = session_class.controller.session.delete(:authlogic_oauth2_attributes)
         self.oauth2_token = generate_access_token.token
+        self.after_oauth2_authentication if self.respond_to?(:after_oauth2_authentication)
       end
 
       def access_token
