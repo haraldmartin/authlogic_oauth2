@@ -8,20 +8,19 @@ This plugin works very much like jrallison's authlogic_oauth gem (http://github.
 
   config.gem "authlogic"
   config.gem "oauth2"
-  
+  config.gem "authlogic_oauth2"
+
   $ sudo rake gems:install
 
-=== 2. Install the authlogic_oauth2 plugin
+For older version of Rails, you can install authlogic_oauth2 as a plugin:
 
   $ script/plugin install git://github.com/andyhite/authlogic_oauth2.git
 
-This plugin will be soon be packaged as a gem.
-
-=== 3. Set up and configure authlogic
+=== 2. Set up and configure authlogic
 
 For information about how to set up and configure authlogic, please consult the authlogic README (http://github.com/binarylogic/authlogic)
 
-=== 4. Add the necessary fields to your authlogic users table
+=== 3. Add the necessary fields to your authlogic users table
 
   class AddOauth2FieldsToUser < ActiveRecord::Migration
     def self.up
@@ -36,7 +35,7 @@ For information about how to set up and configure authlogic, please consult the 
   
 IMPORTANT: make sure that you allow null values for email, crypted_password, and password_salt if they aren't required for OAuth2 users.
   
-=== 5. Define the oauth2_client and oauth2_scope class methods in your UserSession model
+=== 4. Define the oauth2_client and oauth2_scope class methods in your UserSession model
 
 The oauth2_client method should return an OAuth2::Client that is configured for your OAuth2 provider.
 
@@ -54,7 +53,7 @@ Here's an example for Facebook:
     end
   end
   
-=== 6. Make sure you save your objects properly
+=== 5. Make sure you save your objects properly
 
 We need to redirect the user to their oauth2 provider so they can authenticate and then pick things back up when they're returned, so any calls to User#save or UserSession#save need to be updated to the following format:
 
@@ -76,7 +75,7 @@ and
     end
   end
   
-=== 7. Add the login and register buttons to their respective forms
+=== 6. Add the login and register buttons to their respective forms
 
 In file app/views/user_sessions/new.html.erb:
 
@@ -92,7 +91,7 @@ In file app/views/users/new.html.erb:
     <%= oauth2_register_button :value => "Register using Facebook" %>
   <% end %>
   
-=== 8. There is no step 8
+=== 7. There is no step 7
 
 If you followed these steps correctly, then you should be able to register and login using OAuth2.
 
