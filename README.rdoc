@@ -30,6 +30,8 @@ For information about how to set up and configure authlogic, please consult the 
     end
   end
   
+IMPORTANT: make sure that you allow null values for email, crypted_password, and password_salt if they aren't required for OAuth2 users.
+  
 === 5. Define the oauth2_client and oauth2_scope class methods in your UserSession model
 
 The oauth2_client method should return an OAuth2::Client that is configured for your OAuth2 provider.
