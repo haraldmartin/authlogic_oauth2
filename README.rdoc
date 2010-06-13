@@ -107,7 +107,7 @@ You can pre-populate user information by adding the following to your User model
   class User < ActiveRecord::Base
     ...
   
-    before_filter :populate_oauth2_user
+    before_create :populate_oauth2_user
   
   private
 
