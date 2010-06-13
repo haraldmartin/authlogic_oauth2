@@ -1,0 +1,124 @@
+= Authlogic OAuth2
+
+This plugin works very much like jrallison's authlogic_oauth gem (http://github.com/jrallison/authlogic_oauth), and much of the code is repurposed from his work. If you have used authlogic_oauth before, then you should have no problem using authlogic_oauth2.
+
+== Install and use
+
+=== 1. Install the authlogic and oauth2 gems
+
+  config.gem "authlogic"
+  config.gem "oauth2"
+  
+  $ sudo rake gems:install
+
+=== 2. Install the authlogic_oauth2 plugin
+
+  $ script/plugin install git://github.com/andyhite/authlogic_oauth2.git
+
+This plugin will be soon be packaged as a gem.
+
+=== 3. Set up and configure authlogic
+
+For information about how to set up and configure authlogic, please consult the authlogic README (http://github.com/binarylogic/authlogic)
+
+=== 4. Add the necessary fields to your authlogic users table
+
+  class AddOauth2FieldsToUser < ActiveRecord::Migration
+    def self.up
+      add_column :users, :oauth2_token, :string
+      add_index :users, :oauth2_token
+    end
+    
+    def self.down
+      remove_column :users, :oauth2_token
+    end
+  end
+  
+IMPORTANT: make sure that you allow null values for email, crypted_password, and password_salt if they aren't required for OAuth2 users.
+  
+=== 5. Define the oauth2_client and oauth2_scope class methods in your UserSession model
+
+The oauth2_client method should return an OAuth2::Client that is configured for your OAuth2 provider.
+
+The oauth2_scope method should return a string representing the extended permission you need to request from the OAuth2 provider.
+
+Here's an example for Facebook:
+
+  class UserSession < Authlogic::Session::Base
+    def self.oauth2_client
+      OAuth2::Client.new("CLIENT_ID", "SECRET_KEY", :site => "https://graph.facebook.com")
+    end
+    
+    def self.oauth2_scope
+      'email,user_birthday'
+    end
+  end
+  
+=== 6. Make sure you save your objects properly
+
+We need to redirect the user to their oauth2 provider so they can authenticate and then pick things back up when they're returned, so any calls to User#save or UserSession#save need to be updated to the following format:
+
+  @user.save do |result|
+    if result
+      # Do something
+    else
+      # Do something else
+    end
+  end
+  
+and
+
+  @user_session.save do |result|
+    if result
+      # Do something
+    else
+      # Do something else
+    end
+  end
+  
+=== 7. Add the login and register buttons to their respective forms
+
+In file app/views/user_sessions/new.html.erb:
+
+  <% form_for @user_session, :url => user_session_path do |f| %>
+    # All your other form stuff goes here, if you need it.
+    <%= oauth2_login_button :value => "Login using Facebook" %>
+  <% end %>
+  
+In file app/views/users/new.html.erb:
+  
+  <% form_for @user, :url => account_path do |f| %>
+    # All your other form stuff goes here, if you need it.
+    <%= oauth2_register_button :value => "Register using Facebook" %>
+  <% end %>
+  
+=== 8. There is no step 8
+
+If you followed these steps correctly, then you should be able to register and login using OAuth2.
+
+== Accessing API endpoints
+
+You can easily access any API endpoints that are exposed to an OAuth2 user by utilizing the oauth2 gem's "get" method on current_user#oauth2_client. For instance, you can access information about the currently logged in user's Facebook profile by doing the following:
+
+  current_user.oauth2_client.get('/me')
+  
+This will return a JSON string representing the user's profile information.
+
+You can pre-populate user information by using the after_oauth2_authentication hook in your user model:
+
+  require 'json'
+  
+  class User < ActiveRecord::Base
+    ...
+  
+    def after_oauth2_authentication
+      json = oauth2_client.get('/me')
+
+      if user_data = JSON.parse(json)
+        self.name = user_data['name']
+        self.facebook_uid = user_data['id']
+      end
+    end
+  end
+
+You can get more information about the Facebook Graph API on the following website: http://developers.facebook.com/docs/api
