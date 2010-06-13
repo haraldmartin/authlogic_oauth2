@@ -75,14 +75,17 @@ and
 In file app/views/user_sessions/new.html.erb:
 
   <% form_for @user_session, :url => user_session_path do |f| %>
-    # All your other form stuff goes here
+    # All your other form stuff goes here, if you need it.
     <%= oauth2_login_button :value => "Login using Facebook" %>
   <% end %>
   
 In file app/views/users/new.html.erb:
   
   <% form_for @user, :url => account_path do |f| %>
-    # All your other form stuff goes here
+    # All your other form stuff goes here, if you need it.
     <%= oauth2_register_button :value => "Register using Facebook" %>
   <% end %>
   
+=== 8. There is no step 8
+
+If you followed these steps correctly, then you should be able to register and login using OAuth2.
