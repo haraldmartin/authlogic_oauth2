@@ -58,7 +58,7 @@ module AuthlogicOauth2
         result
       end
 
-      # accessors for oauth2 fields
+      # Accessors for oauth2 fields
       def oauth2_token
         read_attribute(oauth2_token_field)
       end
@@ -67,7 +67,8 @@ module AuthlogicOauth2
         write_attribute(oauth2_token_field, value.blank? ? nil : value)
       end
       
-      def oauth2_client
+      # Provides access to an API exposed on the access_token object
+      def oauth2_access
         access_token
       end
 
@@ -87,6 +88,8 @@ module AuthlogicOauth2
         # Restore any attributes which were saved before redirecting to the oauth2 server
         self.attributes = session_class.controller.session.delete(:authlogic_oauth2_attributes)
         self.oauth2_token = generate_access_token.token
+        
+        # Execute callback if it's defined in the user model
         self.after_oauth2_authentication if self.respond_to?(:after_oauth2_authentication)
       end
 
@@ -101,7 +104,8 @@ module AuthlogicOauth2
       def validate_password_with_oauth2?
         !using_oauth2? && require_password?
       end
-
+      
+      # Convenience methods for accessing configuration values
       def oauth2_token_field
         self.class.oauth2_token_field
       end

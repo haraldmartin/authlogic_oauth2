@@ -16,6 +16,34 @@ module AuthlogicOauth2
         rw_config(:find_by_oauth2_method, value, :find_by_oauth2_token)
       end
       alias_method :find_by_oauth2_method=, :find_by_oauth2_method
+      
+      # * <tt>Default:</tt> ''
+      # * <tt>Accepts:</tt> String
+      def oauth2_client_id(value = nil)
+        rw_config(:oauth2_client_id, value, '')
+      end
+      alias_method :oauth2_client_id=, :oauth2_client_id
+      
+      # * <tt>Default:</tt> ''
+      # * <tt>Accepts:</tt> String
+      def oauth2_client_secret(value = nil)
+        rw_config(:oauth2_client_secret, value, '')
+      end
+      alias_method :oauth2_client_secret=, :oauth2_client_secret
+      
+      # * <tt>Default:</tt> ''
+      # * <tt>Accepts:</tt> String
+      def oauth2_site(value = nil)
+        rw_config(:oauth2_site, value, '')
+      end
+      alias_method :oauth2_site=, :oauth2_site
+      
+      # * <tt>Default:</tt> ''
+      # * <tt>Accepts:</tt> String
+      def oauth2_scope(value = nil)
+        rw_config(:oauth2_scope, value, '')
+      end
+      alias_method :oauth2_scope=, :oauth2_scope
     end
 
     module Methods
@@ -67,8 +95,25 @@ module AuthlogicOauth2
         end
       end
 
+      # Convenience methods for accessing configuration values
       def find_by_oauth2_method
         self.class.find_by_oauth2_method
+      end
+      
+      def oauth2_client_id
+        self.class.oauth2_client_id
+      end
+      
+      def oauth2_client_secret
+        self.class.oauth2_client_secret
+      end
+      
+      def oauth2_site
+        self.class.oauth2_site
+      end
+      
+      def oauth2_scope
+        self.class.oauth2_scope
       end
     end
   end
