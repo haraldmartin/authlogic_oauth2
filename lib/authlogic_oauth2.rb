@@ -10,9 +10,16 @@ Authlogic::Session::Base.send(:include, AuthlogicOauth2::Session)
 ActionController::Base.helper AuthlogicOauth2::Helper
 
 # Throw callback rack app into the middleware stack
-ActionController::Dispatcher.middleware = ActionController::MiddlewareStack.new do |m|
-  ActionController::Dispatcher.middleware.each do |klass|
-    m.use klass
+if defined?(ActionController::Metal)
+  # Rails >= 3.0
+  require 'oauth2_callback_filter'
+  if Rails.application.instance_variable_get('@app')
+    Rails.application.instance_variable_set('@app', Oauth2CallbackFilter.new(Rails.application.app))
+  else
+    Rails.configuration.middleware.use(Oauth2CallbackFilter)
   end
-  m.use Oauth2CallbackFilter
+elsif defined?(ActionController::Dispatcher) && defined?(ActionController::Dispatcher.middleware)
+  # Rails >= 2.3
+  require 'oauth2_callback_filter'
+  ActionController::Dispatcher.middleware.use(Oauth2CallbackFilter)
 end
