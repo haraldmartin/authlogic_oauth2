@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{authlogic_oauth2}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Hite"]
-  s.date = %q{2010-06-13}
+  s.date = %q{2010-06-14}
   s.description = %q{Authlogic OAuth2 is an extension of the Authlogic library to add OAuth2 support. OAuth2 can be used to allow users to login with their Facebook credentials.}
   s.email = %q{andrew@andrew-hite.com}
   s.extra_rdoc_files = ["README.rdoc", "lib/authlogic_oauth2.rb", "lib/authlogic_oauth2/acts_as_authentic.rb", "lib/authlogic_oauth2/helper.rb", "lib/authlogic_oauth2/oauth2_process.rb", "lib/authlogic_oauth2/session.rb", "lib/authlogic_oauth2/version.rb", "lib/oauth2_callback_filter.rb"]
