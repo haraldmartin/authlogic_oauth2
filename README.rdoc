@@ -33,24 +33,19 @@ For information about how to set up and configure authlogic, please consult the 
     end
   end
   
-IMPORTANT: make sure that you allow null values for email, crypted_password, and password_salt if they aren't required for OAuth2 users.
+IMPORTANT: make sure that you allow null values for crypted_password and password_salt if they aren't required for OAuth2 users.
   
-=== 4. Define the oauth2_client and oauth2_scope class methods in your UserSession model
+=== 4. Configure your OAuth2 client in the UserSession model
 
-The oauth2_client method should return an OAuth2::Client that is configured for your OAuth2 provider.
-
-The oauth2_scope method should return a string representing the extended permission you need to request from the OAuth2 provider.
+The oauth2_client_id, oauth2_client_secret and oauth2_site configuration values must be specified so we can initialize the connection with your OAuth2 provider. The oauth2_scope value is optional, and is used to request extended permissions from your provider.
 
 Here's an example for Facebook:
 
   class UserSession < Authlogic::Session::Base
-    def self.oauth2_client
-      OAuth2::Client.new("CLIENT_ID", "SECRET_KEY", :site => "https://graph.facebook.com")
-    end
-    
-    def self.oauth2_scope
-      'email,user_birthday'
-    end
+    oauth2_client_id      "APPLICATION_ID"
+    oauth2_client_secret  "APPLICATION_SECRET"
+    oauth2_site           "https://graph.facebook.com"
+    oauth2_scope          "email,user_birthday"
   end
   
 === 5. Make sure you save your objects properly
@@ -97,9 +92,9 @@ If you followed these steps correctly, then you should be able to register and l
 
 == Accessing API endpoints
 
-You can easily access any API endpoints that are exposed to an OAuth2 user by utilizing the oauth2 gem's "get" method on current_user#oauth2_client. For instance, you can access information about the currently logged in user's Facebook profile by doing the following:
+You can easily access any API endpoints that are exposed to an OAuth2 user by utilizing the oauth2 gem's "get" method on current_user#oauth2_access. For instance, you can access information about the currently logged in user's Facebook profile by doing the following:
 
-  current_user.oauth2_client.get('/me')
+  current_user.oauth2_access.get('/me')
   
 This will return a JSON string representing the user's profile information.
 
@@ -111,7 +106,7 @@ You can pre-populate user information by using the after_oauth2_authentication h
     ...
   
     def after_oauth2_authentication
-      json = oauth2_client.get('/me')
+      json = oauth2_access.get('/me')
 
       if user_data = JSON.parse(json)
         self.name = user_data['name']
