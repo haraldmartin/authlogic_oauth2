@@ -94,7 +94,7 @@ module AuthlogicOauth2
       end
 
       def access_token
-        OAuth2::AccessToken.new(oauth2, read_attribute(oauth2_token_field))
+        OAuth2::AccessToken.new(oauth2_client, read_attribute(oauth2_token_field))
       end
 
       def using_oauth2?
