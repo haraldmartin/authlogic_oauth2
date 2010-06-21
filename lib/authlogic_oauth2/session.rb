@@ -77,6 +77,7 @@ module AuthlogicOauth2
     private
 
       def authenticating_with_oauth2?
+        return false if authenticating_with_unauthorized_record?
         # Initial request when user presses one of the button helpers
         (controller.params && !controller.params[:login_with_oauth2].blank?) ||
         # When the oauth2 provider responds and we made the initial request
@@ -87,7 +88,7 @@ module AuthlogicOauth2
         if @record
           self.attempted_record = record
         else
-          self.attempted_record = search_for_record(find_by_oauth2_method, generate_access_token.token)
+          self.attempted_record = search_for_record(find_by_oauth2_method, generate_oauth2_access_token.token)
         end
 
         if !attempted_record

@@ -1,3 +1,5 @@
+require 'authlogic'
+
 module AuthlogicOauth2
   module ActsAsAuthentic
     def self.included(klass)
@@ -87,7 +89,7 @@ module AuthlogicOauth2
       def authenticate_with_oauth2
         # Restore any attributes which were saved before redirecting to the oauth2 server
         self.attributes = session_class.controller.session.delete(:authlogic_oauth2_attributes)
-        self.oauth2_token = generate_access_token.token
+        self.oauth2_token = generate_oauth2_access_token.token
         
         # Execute callback if it's defined in the user model
         self.after_oauth2_authentication if self.respond_to?(:after_oauth2_authentication)
