@@ -1,6 +1,6 @@
 = Authlogic OAuth2
 
-This plugin works very much like jrallison's authlogic_oauth gem (http://github.com/jrallison/authlogic_oauth), and much of the code is repurposed from his work. If you have used authlogic_oauth before, then you should have no problem using authlogic_oauth2.
+Disclaimer: This plugin CANNOT be used alongside other Authlogic extensions like authlogic_oauth and authlogic_openid due to an unfortunate bug caused by all these plugins overriding the ActiveRecord save method to avoid a DoubleRenderError.
 
 == Install and use
 
@@ -45,8 +45,10 @@ Here's an example for Facebook:
     oauth2_client_id      "APPLICATION_ID"
     oauth2_client_secret  "APPLICATION_SECRET"
     oauth2_site           "https://graph.facebook.com"
-    oauth2_scope          "email,user_birthday"
+    oauth2_scope          "offline_access,email,user_birthday"
   end
+
+It's important to note here that if you don't request offline_access permissions from your OAuth2 provider the access token will expire either at a specific time or upon logout from the provider itself. Some providers allow refresh tokens to be issued, but some (Facebook, for example) does not. Refresh token handling hasn't been implemented in authlogic_oauth2 yet, so make sure you request offline_access.
   
 === 5. Make sure you save your objects properly
 
