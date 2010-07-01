@@ -11,7 +11,13 @@ ActionController::Base.helper AuthlogicOauth2::Helper
 
 # Throw callback rack app into the middleware stack
 if defined?(ActionController::Metal)
-  Rails.configuration.middleware.use(Oauth2CallbackFilter) # Rails >= 3.0
+  module AuthlogicOAuth2
+    class Railtie < Rails::Railtie
+      initializer :load_oauth2_callback_filter do |app|
+        app.config.middleware.use(Oauth2CallbackFilter) # Rails >= 3.0
+      end
+    end
+  end
 else
   ActionController::Dispatcher.middleware.use(Oauth2CallbackFilter) # Rails < 3.0
 end
