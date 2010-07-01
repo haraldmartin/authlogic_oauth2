@@ -92,7 +92,7 @@ module AuthlogicOauth2
         end
 
         if !attempted_record
-          errors.add_to_base("Could not find user in our database, have you registered with your Oauth2 account?")
+          errors.add(:base, "Could not find user in our database, have you registered with your Oauth2 account?")
         end
       end
 
