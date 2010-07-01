@@ -10,7 +10,7 @@ module AuthlogicOauth2
   
   private
     def oauth2_button(name, options = {})
-      "<input type='submit' value='#{options[:value]}' name='#{name}' id='user_submit' class='#{options[:class]}'/>"
+      submit_tag(options[:value], :name => name, :id => 'user_submit', :class => options[:class])
     end
   end
 end
