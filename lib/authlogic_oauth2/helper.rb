@@ -10,7 +10,12 @@ module AuthlogicOauth2
   
   private
     def oauth2_button(name, options = {})
-      submit_tag(options[:value], :name => name, :id => 'user_submit', :class => options[:class])
+      id = options[:id] || 'user_submit'
+      if options[:type] == 'image'
+        image_submit_tag(options[:src], :value => options[:value], :name => name, :id => id, :class => options[:class])
+      else
+        submit_tag(options[:value], :name => name, :id => id, :class => options[:class])
+      end
     end
   end
 end
